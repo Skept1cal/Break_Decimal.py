@@ -166,6 +166,9 @@ class Decimal:
         n = normalize(n)
 
         return Decimal((self.value[0] * n[0], self.value[1] + n[1]))
+    
+    def mul(self, n):
+        return self.mult(n)
 
     def __mul__(self, n):
         return self.mult(n)
@@ -381,6 +384,9 @@ def normalize(x : Decimal | str | tuple | list | int | float):
     else:
         raise TypeError(f"Invalid input type for function normalize()\nExpected: {["str", "int", "float", "tuple", "list", "Decimal"]}, got: {type(x)}")
 
+def norm(x: Decimal | str | tuple | list | int | float): # Shortened alias
+    return normalize(x)
+
 # Min/max
 
 def bigmax(n1, n2):
@@ -516,3 +522,6 @@ def disp(n, s):
         exp_sign = -1 if n[1] < 0 else 1
 
         return f"{n[0] * s:.2f}e{exp_sign * exp_mantissa:.2f}e{exp_exponent}"
+
+print(Decimal("9835")) # 9.835e3
+print(Decimal("9.87654321")) # 9.87654321e0
