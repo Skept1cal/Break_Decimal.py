@@ -522,6 +522,3 @@ def disp(n, s):
         exp_sign = -1 if n[1] < 0 else 1
 
         return f"{n[0] * s:.2f}e{exp_sign * exp_mantissa:.2f}e{exp_exponent}"
-
-print(Decimal("9835")) # 9.835e3
-print(Decimal("9.87654321")) # 9.87654321e0
