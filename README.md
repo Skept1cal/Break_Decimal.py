@@ -1,79 +1,247 @@
 A numerical library for Python, largely inspired by https://github.com/Patashu/break_infinity.js.
 
-This library can work with and represent values up to around ~1ee308 (10<sup>10<sup>308</sup></sup>), as opposed to standard floats which cap out at ~1.797e308.
+This library *should* be able to work with and represent values up to around ~1ee308 (10<sup>10<sup>308</sup></sup>), as opposed to standard floats which cap out at ~1.797e308,
+or 1.797 * 10<sup>308</sup>.
+
+The library supports most if not all basic operations, floor division, general logarithms, and has built-in display functions with different formats.
+
+Please don't expect this to be perfect, I'm not particularly great at programming, and this was more of a passion project than something to be absolutely robust.
+Thank you.
 
 ## Importing
 
 In order to use the package, you must install it on your computer with:
 
-```
+```python
 pip install git+https://github.com/Skept1cal/Break_Decimal.py
 ```
 
 Then, you can import it into any project through:
 
-```
+```python
 from Break_Decimal import Decimal
 ```
 
 or:
 
-```
+```python
 import Break_Decimal as breakdec
 ```
 
 ## Functions
 
-# Unique stand-alones
+### Unique stand-alones:
 
-```Decimal``` - Creates a Decimal class object with tuple attribute *value*
-normalize(x)/norm(x) - Normalizes input value *x* into a *tuple* representing the standard form *a * 10<sup>b</sup>*
-bigmax(n1, n2) - Returns the **greater** value out of *n1* and *n2*
-bigmin(n1, n2) - Returns the **smaller** value out of *n1* and *n2*
+```python
+x = Decimal("1e456") # Creates a Decimal class object with a tuple as attribute 'value'
 
-# Methods
+# Normalizes input value 'x' into a tuple, representing the standard form 'a * 10^b'. norm(x) can be used as an alias if desired.
+normalize(x) 
+norm(x)
 
-self.gt(other)/*self* > *other* - Returns boolean based on whether *self* > *other* is true
-self.gte(other)/*self* >= *other* - Returns boolean based on whether *self* >= *other* is true
-self.lt(other)/*self* < *other* - Returns boolean based on whether *self* < *other* is true
-self.lte(other)/*self* <= *other* - Returns boolean based on whether *self* <= *other* is true
-self.eq(other)/*self* == *other* - Returns boolean based on whether *self* == *other* is true
+bigmax(n1, n2) # Returns the greater value out of 'n1' and 'n2'
+bigmin(n1, n2) # Returns the smaller value out of 'n1' and 'n2'
+```
+
+### Methods:
+
+```python
+
+# Absolute value ----------:
+
+self._abs() # Base function
+abs(self) # Allows usage of the regular abs() function in Python
+
+_abs(n) # Its stand-alone version
+
+# Greater than (x > y) ----------:
+
+self.gt(other) # Base function
+self > other # With symbols
+
+gt(n1, n2) # Its stand-alone version
+
+# Greater than or equal to (x >= y) ----------:
+
+self.gte(other) # Base function
+self >= other # With symbols
+
+gte(n1, n2) # Its stand-alone version
+
+# Less than (x < y) ----------:
+
+self.lt(other) # Base function
+self < other # With symbols
+
+lt(n1, n2) # Its stand-alone version
+
+# Less than or equal to (x <= y) ----------:
+
+self.lte(other) # Base function
+self <= other # With symbols
+
+lte(n1, n2) # Its stand-alone version
+
+# Equal to (x == y) ----------:
+
+self.eq(other) # Base function
+self == other # With symbols
+
+eq(n1, n2) # Its stand-alone version
+
+```
 
 ***NOTE: LOGARITHMS DO NOT TAKE NEGATIVE VALUES.***
 
-self.log(base) - Returns log*base* of *self*
-self.log10() - Returns log*10* of *self*
-self.log2() - Returns log*2* of *self*
-self.ln() - Returns the natural logarithm (~2.71828) of *self*
+```python
 
-self.pow(n)/*self* ** *n* - Returns _self ** n_
-self.root(n) - Returns the *n*th root of *self*. Alternatively, you can call _self.pow(n ** -1)_ to calculate roots. Be mindful of *n*'s type.
+# Logarithms ----------:
 
-self.mult(n)/self.mul(n)/*self* * *n* - Returns *self * n*
-self.div(n)/*self* / *n* - Returns *self / n*
+self.log(base) # Base-'base' logarithm
+log(n, base) # Its stand-alone version
 
-self.add(n)/*self* + *n* - Returns *self + n*
-self.sub(n)/*self* - *n* - Returns *self - n*
+self.log10() # Base-10 logarithm
+log10(n) # Its stand-alone version
 
-self.disp(s) - Returns a built-in display format for *self*, with *sign (s)*. *s* can be either *1* or *-1*, other values will raise a *ValueError*.
+self.log2() # Base-2 logarithm
+log2(n) # Its stand-alone version
+
+self.ln() # Natural logarithm (base-~2.71828)
+ln(n) # Its stand-alone version
+
+# Exponentiation (base ** exp) ----------:
+
+self.pow(n) # Base function
+self ** n # With symbols
+
+pow(base, exp) # Its stand-alone version
+
+# Roots ----------:
+
+self.root(n) # Base function: 'n'th root of 'self'
+
+# Alternatively, you can use 'pow' to calculate roots, by inputting 'n ** -1'. Be careful, though; you can only do this if 'n' is 'Decimal', 'int', or 'float'.
+self.pow(pow(n, -1))
+
+root(base, root) # Its stand-alone version
+
+# Multiplication (a * b) ----------:
+
+self.mult(n) # Base function
+self.mul(n) # Slightly shorter alias
+self * n # With symbols
+
+mult(a, b) # Its stand-alone version
+mul(a, b) # Slightly shorter alias
+
+# Division (a / b) ----------:
+
+self.div(n) # Base function
+self / n # With symbols
+
+div(a, b) # Its stand-alone version
+
+# Floor division (a // b); performs the operation on the mantissa by default ----------:
+
+self.fdiv(n) # Base function
+self // n # With symbols
+
+fdiv(a, b) # Its stand-alone version
+
+# If needed, 'self.truefdiv(n)' or truefdiv(a, b) can be used to perform floor division on the full number:
+
+self.truefdiv(n) # Base function
+truefdiv(a, b) # Its stand-alone version
+
+# Addition (x + y) ----------:
+
+self.add(n) # Base function
+self + n # With symbols
+
+add(n1, n2) # Its stand-alone version
+
+# Subtraction (x - y) ----------:
+
+self.sub(n) # Base function
+self - n # With symbols
+
+sub(n1, n2) # Its stand-alone version
+
+```
+
+### How to use the `disp()` function
+
+You can display a Decimal more elegantly using:
+
+```python
+self.disp(s, form)
+```
+
+or:
+
+```python
+disp(n, s, form)
+```
+
+In order to display a Decimal (or a number in virtually any other type), you need to provide 2 arguments if you're using the method, and 3 if you're using the function:
+
+`n`: The input value where `abs(n)` is between ~10<sup>-10<sup>308</sup></sup> and ~10<sup>10<sup>308</sup></sup>,
+`s`: The input sign which can be either `1` or `-1`,
+`form`: The input format which can be a string contained in the list: `["1", "1e1", "e1", "1e1e1", "e1e1", "1ee1", "ee1"]`.
+
+`n` and `s` are self-explanatory, so let's take a look at `form`.
+
+Formats:
+
+- `form = "1"`:
+Displays the number as a raw string, with no formatting (e.g. 1e10000 would become a 1 with 10000 zeroes behind it). May be slightly inconsistent if `n` has a long decimal fraction.
+
+- `form = "1e1"`:
+Displays the number as a combination of `n`'s mantissa and exponent, without formatting the exponent (e.g. 1e10000 would become 1e10000).
+If the number is between 1e-3 and 1e3, the exponent is hidden and instead the number is converted to be regular (e.g. 5e2 would become 500.0).
+
+- `form = "e1"`:
+Integrates the mantissa into the exponent, without formatting it (e.g. 2e500 would become ~e500.301).
+
+- `form = "1e1e1"`:
+Same as `form = "1e1"`, except the exponent is formatted above 1e1e6 and below 1e-1e6, so 2e3000000, for example, would become 2.00e3.00e6.
+
+- `form = "e1e1"`:
+Combination of `form = "e1"` and `form = 1e1e1`. 2e3000000 Would become ~e3000000.301, or ~e3.00e6.
+
+- `form = "1ee1"`:
+Same as `form = "1e1e1"`, except the exponent's mantissa is combined with the exponent, so 2e3000000 would become ~2ee6.477.
+
+- `form = "ee1"`:
+Combination of `form = "e1"` and `form = "1ee1"`. 2e3000000 would become ee
+
+```python
+
+# 1E1E notation (follows the notation: x * 10 ** (y * 10 ** z), or xeye10)
+
+self.disp(s, form) # Base function
+'''Returns a built-in display format for *self*, with *sign (s)*. *s* can be either *1* or *-1*, other values will raise a *ValueError*.
 If the exponent of *self* (or *self.log10()*) is between *-3* and *3*, e notation is not used.
 If the exponent of *self* (or *self.log10()*) is between *-1e6* and *-3*, or *3* and *1e6* singular e notation is used.
 if the exponent of *self* (or *self.log10()*) is below *-1e6* or above *1e6*, e notation is used on the exponent as well.
 e.g:
+'''
 
-```
 print(Decimal("1e1").disp(1)) # Returns "10.00"
 print(Decimal("1e100").disp(-1)) # Returns "-1.00e100"
 print(Decimal("1e10000000").disp(1)) # Returns "1.00e1.00e7"
 print(Decimal("1e-2").disp(1)) # Returns "0.01"
+
+disp(n, s, form) # Its stand-alone version
+
 ```
 
-# Note:
+### Note:
 
-The package also contains stand-alone functions, which can be called similarly to the methods, but you need to input an additional value in place of *self*.
+The package also contains stand-alone functions, which can be called similarly to the methods, but you need to input an additional value in place of `self`.
 e.g:
 
-```
+```python
 x = Decimal("1e10000")
 
 print(pow(x, 2)) # Returns "1e20000"
@@ -81,7 +249,7 @@ print(pow(x, 2)) # Returns "1e20000"
 
 as opposed to:
 
-```
+```python
 x = Decimal("1e10000")
 
 print(x.pow(2)) # Returns "1e20000"
@@ -94,9 +262,9 @@ print(x) # Returns "1e20000"
 
 ## Inputting values
 
-As input for a Decimal, you can provide a string, list, tuple, float or int value, as well as other Decimal objects:
+As input for a `Decimal`, you can provide a `string`, `list`, `tuple`, `float` or `int` value, as well as other `Decimal` objects:
 
-```
+```python
 print(Decimal("1e5000")) # 1.0e5000
 print(Decimal(1.23456789)) # 1.23456789e0
 print(Decimal(2510)) # 2.51e3
@@ -105,30 +273,30 @@ print(Decimal([2, 11])) # 2.0e11
 print(Decimal(Decimal("1e551"))) # 1.0e551
 ```
 
-Int and float values can also be given as strings:
+`Int` and `float` values can also be given as strings:
 
-```
+```python
 print(Decimal("9835")) # 9.835e3
 print(Decimal("9.87654321")) # 9.87654321e0
 ```
 
-As both the Decimal class and its methods, along with all stand-alone functions normalize their input values,
+As both the `Decimal` class and its methods, along with all stand-alone functions normalize their input values,
 the input rules for Decimals also apply to all functions.
 
-A Decimal can be printed without *.disp(s)* or *disp(n, s*) to yield a basic visualization of the object:
+A `Decimal` can be printed without `.disp(s)` or `disp(n, s)` to yield a basic visualization of the object:
 
-```
+```python
 print(Decimal("1e10000")) # 1e10000
 print(Decimal("1e1000000000)) # 1e1000000000, or 1e1e9
 ```
 
-Visibly, the difference between simply printing Decimals and using the display functions is that,
+Visibly, the difference between simply printing `Decimal`s and using the `disp` functions is that,
 when simply printing the object, the exponent isn't formatted, and e notation is used for all values,
-including, say, *1*, which would be turned into *1e0 (1 * 10^0 = 1 * 1 = 1)*.
+including, say, `1`, which would be turned into `1e0`, since `1 * 10^0 = 1 * 1 = 1`.
 
 ## Credits and license
 
-# Ideas:
+### Ideas:
 
 https://github.com/Patashu/break_infinity.js
 Amazing library which inspired both the name and functionality of this one, it's also a significant reason to why I made this.
@@ -137,10 +305,17 @@ Also because I wanted to rewrite my game Temporality's prototype's library, whic
 You can check out the game here:
 *placeholder text*
 
-# License:
+### License:
 
 You can use this package in any way you want. You can make your own copies and distribute it, use it, etc.,
 so long as you include the license of the package/project within your own copies if you do distribute it,
 as per the MIT license.
 
 For the full license refer to the license at the top of the page.
+
+## Version & Contribution:
+
+### Version: V1.0.0
+
+If you for some reason try this library out and find any issues, please don't hesitate to either report them as bugs,
+or make a fork of the project to be used as a fix, and I'll check them out.

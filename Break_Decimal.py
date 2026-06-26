@@ -17,6 +17,14 @@ class Decimal:
     def __str__(self):
         return f"{self.value[0]}e{self.value[1]}"
 
+    # Absolute value (_abs, underscore to differentiate it from Python's abs())
+
+    def _abs(self):
+        return Decimal((abs(self.value[0]), self.value[1]))
+    
+    def __abs__(self):
+        return _abs(self)
+
     # Greater than (gt)
 
     '''We convert the values to their log10 equivalents in order to simplify all calculations here.'''
@@ -178,16 +186,44 @@ class Decimal:
     def div(self, n):
 
         """
-        As mentioned above, we can simply derive the division by multiplying the input value by the reciprocal of the input denominator.
+        As mentioned above, we can simply derive division by multiplying the input value by the reciprocal of the input denominator.
         """
 
         n = normalize(n)
+        
         if n[0] == 0:
             raise ZeroDivisionError("Division by zero is undefined.")
+        
         return self.mult(Decimal(n).pow(-1))
 
     def __truediv__(self, n):
         return self.div(n)
+
+    def fdiv(self, n):
+
+        """
+        By default, we apply floor division to the mantissa of the divided value.
+        """
+
+        original = self.div(n)
+
+        return Decimal((int(original.value[0]), original.value[1]))
+    
+    def __floordiv__(self, n):
+        return fdiv(self, n)
+    
+    def truefdiv(self, n):
+
+        """
+        If needed, we can evaluate the number up to a given precision (up to 308 digits, 15 is chosen here), and perform floor division on that number.
+        """
+
+        original = self.div(n)
+
+        if original.value[1] < 15:
+            return Decimal((original.value[0] * 10 ** original.value[1]) // 1)
+        else:
+            return original
 
     # Addition
 
@@ -240,19 +276,22 @@ class Decimal:
 
     # Display
 
-    def disp(self, s):
+    def disp(self, s, form):
 
         """
         In order to display the value of the object, we default to some arbitrary transition point between standard values and scientific notation.
         We also take an input value for the sign in order to specify if the displayed number should be positive or negative.
+        
+        Based on the input for 'form', different formats are returned. Formats: "1", "1e1", "e1", "1e1e1", "e1e1", "1ee1", "ee1".
+        
         This can be replaced with one's own display function if desired.
-
-        This function also displays the exponent in scientific form (turning the format into x * 10^(y * 10^z)),
-        making it more easily legible. Again, this can be replaced with one's own display function if desired.
         """
 
         if s not in [-1, 1]:
             raise ValueError(f"Invalid value for 's'; expected: {[-1, 1]}, got: {s}")
+        
+        if form not in ["1", "1e1", "e1", "1e1e1", "e1e1", "1ee1", "ee1"]:
+            raise Exception(f"Invalid format; expected: {["1", "1e1", "e1", "1e1e1", "e1e1", "1ee1", "ee1"]}, got: {form}")
 
         if self.value[0] == 0:
             return f"{0:.2f}"
@@ -395,6 +434,13 @@ def bigmax(n1, n2):
 def bigmin(n1, n2):
     return Decimal(n1) if Decimal(n1).log10() <= Decimal(n2).log10() else Decimal(n2)
 
+# Absolute value function (_abs, underscore to differentiate it from Python's abs())
+
+def _abs(n):
+    n = normalize(n)
+
+    return Decimal((abs(n[0]), n[1]))
+
 # Inequality functions
 
 def gt(n1, n2):
@@ -473,8 +519,27 @@ def mult(a, b):
 
     return Decimal((a[0] * b[0], a[1] + b[1]))
 
+def mul(a, b):
+    return mult(a, b)
+
 def div(a, b):
+    if normalize(b)[0] == 0:
+        raise ZeroDivisionError("Division by zero is undefined.")
+    
     return mult(a, pow(b, -1))
+
+def fdiv(a, b):
+    original = div(a, b)
+
+    return Decimal((int(original.value[0]), original.value[1]))
+
+def truefdiv(a, b):
+    original = div(a, b)
+
+    if original.value[1] < 15:
+        return Decimal((original.value[0] * 10 ** original.value[1]) // 1)
+    else:
+        return original
 
 # Addition and subtraction functions
 
@@ -501,24 +566,56 @@ def sub(n1, n2):
 
 # Display function -----------------------------------------------------------------------------------------------------
 
-def disp(n, s):
+def disp(n, s, form):
 
-    n = normalize(n)
+    n = Decimal(normalize(n))
+
+    """
+    In order to display the value of the object, we default to some arbitrary transition point between standard values and scientific notation.
+    We also take an input value for the sign in order to specify if the displayed number should be positive or negative.
+    
+    Based on the input for 'form', different formats are returned. Formats: "1", "1e1", "e1", "1e1e1", "e1e1", "1ee1", "ee1".
+    If no format is given, the function defaults to "1e1e1"
+    
+    This can be replaced with one's own display function if desired.
+    """
+
+    # Checking for invalid inputs
 
     if s not in [-1, 1]:
         raise ValueError(f"Invalid value for 's'; expected: {[-1, 1]}, got: {s}")
+    
+    if form not in ["1", "1e1", "e1", "1e1e1", "e1e1", "1ee1", "ee1"]:
+        raise Exception(f"Invalid format; expected: {["1", "1e1", "e1", "1e1e1", "e1e1", "1ee1", "ee1"]}, got: {form}")
 
-    if n[0] == 0:
+    # Checking if the number is 0
+
+    if n.value[0] == 0:
         return f"{0:.2f}"
 
-    if -3 < log10(n) < 3:
-        return f"{(n[0] * s) * 10 ** n[1]:.2f}"
-    elif -1e6 < n[1] < 1e6:
-        return f"{n[0] * s:.2f}e{n[1]}"
+    # Form 1
+
+    if form == "1":
+        mantissaLen = len(str(n.value[0])[2:])
+        return str(int(n.value[0] * 10 ** mantissaLen)) + "0" * (n.value[1] - mantissaLen)
+
+    # Form 1e1
+
+    if form == "1e1":
+        pass
+
+    if -3 < n.log10() < 3:
+        return f"{(n.value[0] * s) * 10 ** n.value[1]:.2f}"
+    elif -1e6 < n.value[1] < 1e6:
+        return f"{n.value[0] * s:.2f}e{n.value[1]}"
     else:
 
-        exp_mantissa = 10 ** (math.log10(abs(n[1])) - math.log10(abs(n[1])) // 1)
-        exp_exponent = int(math.log10(abs(n[1])))
-        exp_sign = -1 if n[1] < 0 else 1
+        exp_mantissa = 10 ** (math.log10(abs(n.value[1])) - math.log10(abs(n.value[1])) // 1)
+        exp_exponent = int(math.log10(abs(n.value[1])))
+        exp_sign = -1 if n.value[1] < 0 else 1
 
-        return f"{n[0] * s:.2f}e{exp_sign * exp_mantissa:.2f}e{exp_exponent}"
+        return f"{n.value[0] * s:.2f}e{exp_sign * exp_mantissa:.2f}e{exp_exponent}"
+
+x = Decimal("1.23456789e10000")
+
+print(disp(x, 1, "1"))
