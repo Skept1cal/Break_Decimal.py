@@ -93,6 +93,13 @@ self == other # With symbols
 
 eq(n1, n2) # Its stand-alone version
 
+# Not equal to (x != y) ----------:
+
+self.neq(other) # Base function
+self != other # With symbols
+
+neq(n1, n2) # Its stand-alone version
+
 ```
 
 ***NOTE: LOGARITHMS DO NOT TAKE NEGATIVE VALUES.***
@@ -190,7 +197,7 @@ disp(n, s, form)
 In order to display a Decimal (or a number of virtually any other type), you need to provide 2 arguments if you're using the method, and 3 if you're using the function:
 
 `n`: The input value where `abs(n)` is between ~10<sup>-10<sup>308</sup></sup> and ~10<sup>10<sup>308</sup></sup> (for the stand-alone function),<br>
-`s`: The input sign which can be either `1` or `-1`<br>,
+`s`: The input sign which can be either `1` (default) or `-1`<br>,
 `form`: The input format which can be a string contained in the list: `["1", "1e1", "e1", "1e1e1", "e1e1", "1ee1", "ee1"]`<br>.
 
 `n` and `s` are self-explanatory, so let's take a look at `form`.
@@ -225,6 +232,7 @@ Same as `form = "1e1e1"`, except the exponent's mantissa is combined with the ex
 Combination of `form = "e1"` and `form = "1ee1"`. 2e3000000 would become ~ee6.477. The top exponent is technically different but at these magnitudes such differences are dwarfed by the rest of the number. Thus, the bottom mantissa is voided.
 
 If the format is not specified, the function defaults to `form = "1e1e1"`.
+If the sign is not specified, the function defaults to `1`.
 
 Examples:
 
@@ -246,7 +254,7 @@ print(disp(x, -1, "1ee1")) # Output: -2.00ee-6.48
 
 x = Decimal("-2e2")
 
-print(disp(x, 1)) # Output: -200.00
+print(disp(x)) # Output: -200.00
 print(disp(x, -1)) # Output: 200.00
 
 ```
@@ -332,7 +340,9 @@ For the full license please refer to the license at the top of the page.
 
 ## Version & Contribution:
 
-### Version: V1.0.0
+### Version: V1.0.2
 
 If you for some reason try this library out and find any issues, please don't hesitate to either report them as bugs,
 or make a fork of the project to be used as a fix, and I'll check them out.
+
+Please also let me know if you find there are functions not available as stand-alones.

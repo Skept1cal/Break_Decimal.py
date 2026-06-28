@@ -66,6 +66,14 @@ class Decimal:
 
     def __eq__(self, other):
         return self.eq(other)
+    
+    # Not equal to (ne)
+
+    def neq(self, other):
+        return not self.eq(other)
+    
+    def __ne__(self, other):
+        return self.neq(other)
 
     # Logarithms
 
@@ -276,7 +284,7 @@ class Decimal:
 
     # Display
 
-    def disp(self, s, form="1e1e1"):
+    def disp(self, s=1, form="1e1e1"):
         return disp(self, s, form)
 
 # Stand-alone functions ------------------------------------------------------------------------------------------------
@@ -412,7 +420,7 @@ def _abs(n):
 
     return Decimal((abs(n[0]), n[1]))
 
-# Inequality functions
+# Inequality/equality functions
 
 def gt(n1, n2):
     return log10(n1) > log10(n2)
@@ -428,6 +436,9 @@ def lte(n1, n2):
 
 def eq(n1, n2):
     return log10(n1) == log10(n2)
+
+def neq(n1, n2):
+    return log10(n1) != log10(n2)
 
 # Logarithm functions
 
@@ -519,7 +530,7 @@ def add(n1, n2):
     n1 = normalize(n1)
 
     if abs(n1[1] - n2[1]) > 15:
-        return Decimal(bigmax(n1, n2))
+        return bigmax(n1, n2)
 
     scaling = abs(n1[1] - n2[1])
 
@@ -537,7 +548,7 @@ def sub(n1, n2):
 
 # Display function -----------------------------------------------------------------------------------------------------
 
-def disp(n, s, form="1e1e1"):
+def disp(n, s=1, form="1e1e1"):
 
     n = Decimal(normalize(n))
 
