@@ -8,6 +8,10 @@ The library supports most if not all basic operations, floor division, general l
 Please don't expect this to be perfect, I'm not particularly great at coding, and this was more of a passion project than something to be perfect, or near-perfect.
 Thank you.
 
+### Note:
+
+Despite the name, this library is not made with high precision in mind. If you want precision, please use Python's built in Decimal module/package.
+
 ## Importing
 
 In order to use the package, you must install it on your computer with:
