@@ -1,5 +1,4 @@
 import math
-import re
 
 # The Decimal class ----------------------------------------------------------------------------------------------------
 
@@ -677,19 +676,3 @@ def disp(n, s, form="1e1e1"):
             sign = "" if (n.value[0] * s) > 0 else "-"
 
             return f"{sign}ee{exp * exp_sign:.2f}"
-
-x = Decimal("2e3000000")
-
-print(disp(x, 1, "ee1")) # Output: ee6.48
-print(disp(x, -1, "e1e1")) # Output: -e3.00e6
-print(x.disp(1, "e1")) # Output: e3000000.30
-
-x = Decimal("2e-3000000")
-
-print(x.disp(1)) # Output: 2.00e-3.00e6
-print(disp(x, -1, "1ee1")) # Output: -2.00ee-6.48
-
-x = Decimal("-2e2")
-
-print(disp(x, 1)) # Output: -200.00
-print(disp(x, -1)) # Output: 200.00
