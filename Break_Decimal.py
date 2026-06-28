@@ -558,7 +558,7 @@ def disp(n, s, form="1e1e1"):
         raise ValueError(f"Invalid value for 's'; expected: {[-1, 1]}, got: {s}")
     
     if form not in ["1", "1e1", "e1", "1e1e1", "e1e1", "1ee1", "ee1"]:
-        raise Exception(f"Invalid format; expected: {["1", "1e1", "e1", "1e1e1", "e1e1", "1ee1", "ee1"]}, got: {form}")
+        raise ValueError(f"Invalid format; expected: {["1", "1e1", "e1", "1e1e1", "e1e1", "1ee1", "ee1"]}, got: {form}")
 
     # Checking if the number is 0
 
