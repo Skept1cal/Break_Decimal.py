@@ -3,9 +3,9 @@ A numerical library for Python, largely inspired by https://github.com/Patashu/b
 This library *should* be able to work with and represent values up to around ~1ee308 (10<sup>10<sup>308</sup></sup>), as opposed to standard floats which cap out at ~1.797e308,
 or 1.797 * 10<sup>308</sup>.
 
-The library supports most if not all basic operations, floor division, general logarithms, and has built-in display functions with different formats.
+The library supports most if not all basic operations, floor division, general logarithms, and has a built-in display function with different formats.
 
-Please don't expect this to be perfect, I'm not particularly great at programming, and this was more of a passion project than something to be absolutely robust.
+Please don't expect this to be perfect, I'm not particularly great at coding, and this was more of a passion project than something to be perfect, or near-perfect.
 Thank you.
 
 ## Importing
@@ -185,9 +185,9 @@ disp(n, s, form)
 
 In order to display a Decimal (or a number of virtually any other type), you need to provide 2 arguments if you're using the method, and 3 if you're using the function:
 
-`n`: The input value where `abs(n)` is between ~10<sup>-10<sup>308</sup></sup> and ~10<sup>10<sup>308</sup></sup> (for the stand-alone function),
-`s`: The input sign which can be either `1` or `-1`,
-`form`: The input format which can be a string contained in the list: `["1", "1e1", "e1", "1e1e1", "e1e1", "1ee1", "ee1"]`.
+`n`: The input value where `abs(n)` is between ~10<sup>-10<sup>308</sup></sup> and ~10<sup>10<sup>308</sup></sup> (for the stand-alone function),<br>
+`s`: The input sign which can be either `1` or `-1`<br>,
+`form`: The input format which can be a string contained in the list: `["1", "1e1", "e1", "1e1e1", "e1e1", "1ee1", "ee1"]`<br>.
 
 `n` and `s` are self-explanatory, so let's take a look at `form`.
 
@@ -312,7 +312,7 @@ including, say, `1`, which would be turned into `1e0`, since `1 * 10^0 = 1 * 1 =
 
 ### Ideas:
 
-https://github.com/Patashu/break_infinity.js
+https://github.com/Patashu/break_infinity.js:<br>
 Amazing library which inspired both the name and functionality of this one, it's also a significant reason to why I made this.
 Also because I wanted to rewrite my game Temporality's prototype's library, which was significantly limited compared to this one.
 
