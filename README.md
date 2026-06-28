@@ -312,7 +312,7 @@ Visibly, the difference between simply printing `Decimal`s and using the `disp` 
 when simply printing a Decimal, the exponent isn't formatted, and e notation is used for all values,
 including, say, `1`, which would be turned into `1e0`, since `1 * 10^0 = 1 * 1 = 1`.
 
-## Credits and license
+## Credits and license:
 
 ### Ideas:
 
