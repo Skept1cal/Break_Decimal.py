@@ -320,8 +320,7 @@ https://github.com/Patashu/break_infinity.js:<br>
 Amazing library which inspired both the name and functionality of this one, it's also a significant reason to why I made this.
 Also because I wanted to rewrite my game Temporality's prototype's library, which was significantly limited compared to this one.
 
-You can check out the game here:
-*placeholder text*
+I may add the link to it here if I do make either the current version or perhaps the planned version available.
 
 ### License:
 
