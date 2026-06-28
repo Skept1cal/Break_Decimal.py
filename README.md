@@ -183,7 +183,7 @@ or:
 disp(n, s, form)
 ```
 
-In order to display a Decimal (or a number in virtually any other type), you need to provide 2 arguments if you're using the method, and 3 if you're using the function:
+In order to display a Decimal (or a number of virtually any other type), you need to provide 2 arguments if you're using the method, and 3 if you're using the function:
 
 `n`: The input value where `abs(n)` is between ~10<sup>-10<sup>308</sup></sup> and ~10<sup>10<sup>308</sup></sup> (for the stand-alone function),
 `s`: The input sign which can be either `1` or `-1`,
