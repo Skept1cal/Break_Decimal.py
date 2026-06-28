@@ -185,11 +185,13 @@ disp(n, s, form)
 
 In order to display a Decimal (or a number in virtually any other type), you need to provide 2 arguments if you're using the method, and 3 if you're using the function:
 
-`n`: The input value where `abs(n)` is between ~10<sup>-10<sup>308</sup></sup> and ~10<sup>10<sup>308</sup></sup>,
+`n`: The input value where `abs(n)` is between ~10<sup>-10<sup>308</sup></sup> and ~10<sup>10<sup>308</sup></sup> (for the stand-alone function),
 `s`: The input sign which can be either `1` or `-1`,
 `form`: The input format which can be a string contained in the list: `["1", "1e1", "e1", "1e1e1", "e1e1", "1ee1", "ee1"]`.
 
 `n` and `s` are self-explanatory, so let's take a look at `form`.
+
+Note: Formats do not support commas because I am too dumb to implement it efficiently.
 
 Formats:
 
@@ -197,42 +199,51 @@ Formats:
 Displays the number as a raw string, with no formatting (e.g. 1e10000 would become a 1 with 10000 zeroes behind it). May be slightly inconsistent if `n` has a long decimal fraction.
 
 - `form = "1e1"`:
-Displays the number as a combination of `n`'s mantissa and exponent, without formatting the exponent (e.g. 1e10000 would become 1e10000).
-If the number is between 1e-3 and 1e3, the exponent is hidden and instead the number is converted to be regular (e.g. 5e2 would become 500.0).
+Displays the number as a combination of `n`'s mantissa and exponent, without formatting the exponent (e.g. 1e10000000 would become 1e10000000).
+If the number is between 1e-3 and 1e3, the exponent is hidden and instead the number is converted to be regular (e.g. 5e2 would become 500.00).
+The exponent gets formatted if it's above 1e16 or below -1e4. This is due to python doing so at said thresholds, but the format strips the `+` sign.
 
 - `form = "e1"`:
 Integrates the mantissa into the exponent, without formatting it (e.g. 2e500 would become ~e500.301).
+If the number is between 1e-3 and 1e3, similarly to `form = "1e1"`, the exponent is hidden and the number is displayed normally.
 
-- `form = "1e1e1"`:
+- `form = "1e1e1"` (default):
 Same as `form = "1e1"`, except the exponent is formatted above 1e1e6 and below 1e-1e6, so 2e3000000, for example, would become 2.00e3.00e6.
+If no format is given, the function defaults to this.
 
 - `form = "e1e1"`:
-Combination of `form = "e1"` and `form = 1e1e1`. 2e3000000 Would become ~e3000000.301, or ~e3.00e6.
+Combination of `form = "e1"` and `form = 1e1e1`. 2e3000000 Would become ~e3000000.301, which would become ~e3.00e6.
 
 - `form = "1ee1"`:
 Same as `form = "1e1e1"`, except the exponent's mantissa is combined with the exponent, so 2e3000000 would become ~2ee6.477.
 
 - `form = "ee1"`:
-Combination of `form = "e1"` and `form = "1ee1"`. 2e3000000 would become ee
+Combination of `form = "e1"` and `form = "1ee1"`. 2e3000000 would become ~ee6.477. The top exponent is technically different but at these magnitudes such differences are dwarfed by the rest of the number. Thus, the bottom mantissa is voided.
+
+If the format is not specified, the function defaults to `form = "1e1e1"`.
+
+Examples:
 
 ```python
 
-# 1E1E notation (follows the notation: x * 10 ** (y * 10 ** z), or xeye10)
+disp(n, s, form) # Base function
+self.disp(s, form) # Alternative form
 
-self.disp(s, form) # Base function
-'''Returns a built-in display format for *self*, with *sign (s)*. *s* can be either *1* or *-1*, other values will raise a *ValueError*.
-If the exponent of *self* (or *self.log10()*) is between *-3* and *3*, e notation is not used.
-If the exponent of *self* (or *self.log10()*) is between *-1e6* and *-3*, or *3* and *1e6* singular e notation is used.
-if the exponent of *self* (or *self.log10()*) is below *-1e6* or above *1e6*, e notation is used on the exponent as well.
-e.g:
-'''
+x = Decimal("2e3000000")
 
-print(Decimal("1e1").disp(1)) # Returns "10.00"
-print(Decimal("1e100").disp(-1)) # Returns "-1.00e100"
-print(Decimal("1e10000000").disp(1)) # Returns "1.00e1.00e7"
-print(Decimal("1e-2").disp(1)) # Returns "0.01"
+print(disp(x, 1, "ee1")) # Output: ee6.48
+print(disp(x, -1, "e1e1")) # Output: -e3.00e6
+print(x.disp(1, "e1")) # Output: e3000000.30
 
-disp(n, s, form) # Its stand-alone version
+x = Decimal("2e-3000000")
+
+print(x.disp(1)) # Output: 2.00e-3.00e6
+print(disp(x, -1, "1ee1")) # Output: -2.00ee-6.48
+
+x = Decimal("-2e2")
+
+print(disp(x, 1)) # Output: -200.00
+print(disp(x, -1)) # Output: 200.00
 
 ```
 
@@ -286,12 +297,15 @@ the input rules for Decimals also apply to all functions.
 A `Decimal` can be printed without `.disp(s)` or `disp(n, s)` to yield a basic visualization of the object:
 
 ```python
+
+print(Decimal("1e2")) # 1e2
 print(Decimal("1e10000")) # 1e10000
-print(Decimal("1e1000000000)) # 1e1000000000, or 1e1e9
+print(Decimal("1e1000000000")) # 1e1000000000, or 1e1e9
+
 ```
 
 Visibly, the difference between simply printing `Decimal`s and using the `disp` functions is that,
-when simply printing the object, the exponent isn't formatted, and e notation is used for all values,
+when simply printing a Decimal, the exponent isn't formatted, and e notation is used for all values,
 including, say, `1`, which would be turned into `1e0`, since `1 * 10^0 = 1 * 1 = 1`.
 
 ## Credits and license
@@ -311,7 +325,7 @@ You can use this package in any way you want. You can make your own copies and d
 so long as you include the license of the package/project within your own copies if you do distribute it,
 as per the MIT license.
 
-For the full license refer to the license at the top of the page.
+For the full license please refer to the license at the top of the page.
 
 ## Version & Contribution:
 

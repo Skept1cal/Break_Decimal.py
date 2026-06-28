@@ -1,4 +1,5 @@
 import math
+import re
 
 # The Decimal class ----------------------------------------------------------------------------------------------------
 
@@ -276,37 +277,8 @@ class Decimal:
 
     # Display
 
-    def disp(self, s, form):
-
-        """
-        In order to display the value of the object, we default to some arbitrary transition point between standard values and scientific notation.
-        We also take an input value for the sign in order to specify if the displayed number should be positive or negative.
-        
-        Based on the input for 'form', different formats are returned. Formats: "1", "1e1", "e1", "1e1e1", "e1e1", "1ee1", "ee1".
-        
-        This can be replaced with one's own display function if desired.
-        """
-
-        if s not in [-1, 1]:
-            raise ValueError(f"Invalid value for 's'; expected: {[-1, 1]}, got: {s}")
-        
-        if form not in ["1", "1e1", "e1", "1e1e1", "e1e1", "1ee1", "ee1"]:
-            raise Exception(f"Invalid format; expected: {["1", "1e1", "e1", "1e1e1", "e1e1", "1ee1", "ee1"]}, got: {form}")
-
-        if self.value[0] == 0:
-            return f"{0:.2f}"
-
-        if -3 < self.log10() < 3:
-            return f"{(self.value[0] * s) * 10 ** self.value[1]:.2f}"
-        elif -1e6 < self.value[1] < 1e6:
-            return f"{self.value[0] * s:.2f}e{self.value[1]}"
-        else:
-
-            exp_mantissa = 10 ** (math.log10(abs(self.value[1])) - math.log10(abs(self.value[1])) // 1)
-            exp_exponent = int(math.log10(abs(self.value[1])))
-            exp_sign = -1 if self.value[1] < 0 else 1
-
-            return f"{self.value[0] * s:.2f}e{exp_sign * exp_mantissa:.2f}e{exp_exponent}"
+    def disp(self, s, form="1e1e1"):
+        return disp(self, s, form)
 
 # Stand-alone functions ------------------------------------------------------------------------------------------------
 
@@ -566,7 +538,7 @@ def sub(n1, n2):
 
 # Display function -----------------------------------------------------------------------------------------------------
 
-def disp(n, s, form):
+def disp(n, s, form="1e1e1"):
 
     n = Decimal(normalize(n))
 
@@ -597,25 +569,127 @@ def disp(n, s, form):
 
     if form == "1":
         mantissaLen = len(str(n.value[0])[2:])
-        return str(int(n.value[0] * 10 ** mantissaLen)) + "0" * (n.value[1] - mantissaLen)
+        
+        if n.value[1] > 0:
+            baseStr = str(int(n.value[0] * 10 ** mantissaLen)) + "0" * (n.value[1] - mantissaLen)
+        else:
+            baseStr = f"0.{(abs(n.value[1]) - 1) * "0"}{int(n.value[0] * 10 ** mantissaLen)}"
+
+        sign = "" if (n.value[0] * s) > 0 else "-"
+        
+        return f"{sign}{baseStr}"
 
     # Form 1e1
 
-    if form == "1e1":
-        pass
+    elif form == "1e1":
+        if -3 < n.log10() < 3:
+            return f"{(n.value[0] * s) * 10 ** n.value[1]:.2f}"
+        elif -1e4 < n.log10() < 1e16:
+            return f"{n.value[0] * s:.2f}e{n.value[1]}"
+        else:
+            exp = Decimal(abs(n.value[1]))
+            exp_sign = -1 if n.value[1] < 0 else 1
 
-    if -3 < n.log10() < 3:
-        return f"{(n.value[0] * s) * 10 ** n.value[1]:.2f}"
-    elif -1e6 < n.value[1] < 1e6:
-        return f"{n.value[0] * s:.2f}e{n.value[1]}"
-    else:
+            return f"{n.value[0] * s:.2f}e{exp_sign * exp.value[0]:.2f}e{exp.value[1]}"
+    
+    # Form e1
 
-        exp_mantissa = 10 ** (math.log10(abs(n.value[1])) - math.log10(abs(n.value[1])) // 1)
-        exp_exponent = int(math.log10(abs(n.value[1])))
-        exp_sign = -1 if n.value[1] < 0 else 1
+    elif form == "e1":
+        
+        if -3 < n.log10() < 3:
+            return f"{(n.value[0] * s) * 10 ** n.value[1]:.2f}"
+        elif -1e4 < n.log10() < 1e16:
+            exp = abs(n.value[1]) + math.log10(abs(n.value[0]))
+            exp_sign = -1 if n.value[1] < 0 else 1
 
-        return f"{n.value[0] * s:.2f}e{exp_sign * exp_mantissa:.2f}e{exp_exponent}"
+            sign = "" if (n.value[0] * s) > 0 else "-"
 
-x = Decimal("1.23456789e10000")
+            return f"{sign}e{exp_sign * exp:.2f}"
+        else:
+            exp = Decimal(abs(n.value[1]) + math.log10(abs(n.value[0])))
+            exp_sign = -1 if n.value[1] < 0 else 1
 
-print(disp(x, 1, "1"))
+            sign = "" if (n.value[0] * s) > 0 else "-"
+
+            return f"{sign}e{exp_sign * exp.value[0]:.2f}e{exp.value[1]}"
+    
+    # Form 1e1e1
+
+    elif form == "1e1e1" or form == None:
+        if -3 < n.log10() < 3:
+            return f"{(n.value[0] * s) * 10 ** n.value[1]:.2f}"
+        elif -1e6 < n.log10() < 1e6:
+            return f"{n.value[0] * s:.2f}e{n.value[1]}"
+        else:
+            exp = Decimal(n.value[1])
+
+            return f"{n.value[0] * s:.2f}e{exp.value[0]:.2f}e{exp.value[1]}"
+
+    # Form e1e1
+
+    elif form == "e1e1":
+        if -3 < n.log10() < 3:
+            return f"{(n.value[0] * s) * 10 ** n.value[1]:.2f}"
+        elif -1e6 < n.log10() < 1e6:
+            exp = n.log10()
+            exp_sign = -1 if n.value[1] < 0 else 1
+
+            sign = "" if (n.value[0] * s) > 0 else "-"
+
+            return f"{sign}e{exp_sign * exp:.2f}"
+        else:
+            exp = Decimal(n.log10())
+            exp_sign = -1 if n.value[1] < 0 else 1
+
+            sign = "" if (n.value[0] * s) > 0 else "-"
+
+            return f"{sign}e{exp_sign * exp.value[0]:.2f}e{exp.value[1]}"
+    
+    # Form 1ee1
+
+    elif form == "1ee1":
+        if -3 < n.log10() < 3:
+            return f"{(n.value[0] * s) * 10 ** n.value[1]:.2f}"
+        elif -1e6 < n.log10() < 1e6:
+            return f"{n.value[0] * s:.2f}e{n.value[1]}"
+        else:
+            exp = math.log10(abs(n.value[1]))
+            exp_sign = -1 if n.value[1] < 0 else 1
+
+            return f"{n.value[0] * s:.2f}ee{exp * exp_sign:.2f}"
+    
+    # Form ee1
+
+    elif form == "ee1":
+        if -3 < n.log10() < 3:
+            return f"{(n.value[0] * s) * 10 ** n.value[1]:.2f}"
+        elif -1e6 < n.log10() < 1e6:
+            exp = n.log10()
+            exp_sign = -1 if n.value[1] < 0 else 1
+
+            sign = "" if (n.value[0] * s) > 0 else "-"
+
+            return f"{sign}e{exp_sign * exp:.2f}"
+        else:
+            exp = math.log10(abs(n.value[1]))
+            exp_sign = -1 if n.value[1] < 0 else 1
+
+            sign = "" if (n.value[0] * s) > 0 else "-"
+
+            return f"{sign}ee{exp * exp_sign:.2f}"
+
+x = Decimal("2e3000000")
+
+print(disp(x, 1, "ee1")) # Output: ee6.48
+print(disp(x, -1, "e1e1")) # Output: -e3.00e6
+print(x.disp(1, "e1")) # Output: e3000000.30
+
+x = Decimal("2e-3000000")
+
+print(x.disp(1)) # Output: 2.00e-3.00e6
+print(disp(x, -1, "1ee1")) # Output: -2.00ee-6.48
+
+x = Decimal("-2e2")
+
+print(disp(x, 1)) # Output: -200.00
+print(disp(x, -1)) # Output: 200.00
