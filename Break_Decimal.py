@@ -408,10 +408,10 @@ def norm(x: Decimal | str | tuple | list | int | float): # Shortened alias
 # Min/max
 
 def bigmax(n1, n2):
-    return Decimal(n1) if Decimal(n1).log10() >= Decimal(n2).log10() else Decimal(n2) # 'n1' takes priority in the case of equality. This doesn't matter because n1 = n2.
+    return Decimal(n1) if Decimal(n1) >= Decimal(n2) else Decimal(n2) # 'n1' takes priority in the case of equality. This doesn't matter because n1 = n2.
 
 def bigmin(n1, n2):
-    return Decimal(n1) if Decimal(n1).log10() <= Decimal(n2).log10() else Decimal(n2)
+    return Decimal(n1) if Decimal(n1) <= Decimal(n2) else Decimal(n2)
 
 # Absolute value function (_abs, underscore to differentiate it from Python's abs())
 
