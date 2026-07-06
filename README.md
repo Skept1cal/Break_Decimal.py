@@ -306,7 +306,7 @@ print(Decimal("9.87654321")) # 9.87654321e0
 As both the `Decimal` class and its methods, along with all stand-alone functions normalize their input values,
 the input rules for Decimals also apply to all functions.
 
-A `Decimal` can be printed without `.disp(s)` or `disp(n, s)` to yield a basic visualization of the object:
+A `Decimal` can be printed without the `disp()` functions to yield a basic visualization of the object:
 
 ```python
 
@@ -316,7 +316,7 @@ print(Decimal("1e1000000000")) # 1e1000000000, or 1e1e9
 
 ```
 
-Visibly, the difference between simply printing `Decimal`s and using the `disp` functions is that,
+Visibly, the difference between simply printing `Decimal`s and using the `disp()` functions is that,
 when simply printing a Decimal, the exponent isn't formatted, and e notation is used for all values,
 including, say, `1`, which would be turned into `1e0`, since `1 * 10^0 = 1 * 1 = 1`.
 
