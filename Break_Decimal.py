@@ -454,7 +454,7 @@ def log(n, base):
     if n[0] == 0:
         raise ValueError(f"Logarithm of zero is undefined.")
 
-    return math.log(abs(n[0], base)) + n[1] * math.log(10, base)
+    return math.log(abs(n[0]), base) + n[1] * math.log(10, base)
 
 def log10(n):
     n = normalize(n)
