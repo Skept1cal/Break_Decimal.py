@@ -340,7 +340,7 @@ For the full license please refer to the license at the top of the page.
 
 ## Version & Contribution:
 
-### Version: V1.0.3
+### Version: V1.0.4
 
 If you for some reason try this library out and find any issues, please don't hesitate to either report them as bugs,
 or make a fork of the project to be used as a fix, and I'll check them out.
