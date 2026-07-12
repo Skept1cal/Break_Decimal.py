@@ -578,6 +578,8 @@ def disp(n, s=1, form="1e1e1"):
     # Form 1
 
     if form == "1":
+        raise Exception("Format '1' is deprecated indefinitely.")
+        '''
         mantissaLen = len(str(n.value[0])[2:])
         
         if n.value[1] > 0:
@@ -588,6 +590,7 @@ def disp(n, s=1, form="1e1e1"):
         sign = "" if (n.value[0] * s) > 0 else "-"
         
         return f"{sign}{baseStr}"
+        '''
 
     # Form 1e1
 

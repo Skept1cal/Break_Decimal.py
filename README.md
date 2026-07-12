@@ -209,6 +209,8 @@ Formats:
 - `form = "1"`:
 Displays the number as a raw string, with no formatting (e.g. 1e10000 would become a 1 with 10000 zeroes behind it). May be slightly inconsistent if `n` has a long decimal fraction.
 
+***NOTE: THIS FORMAT IS CURRENTLY CONSIDERED DEPRECATED, AND I DON'T KNOW IF I'LL EVER FIX IT.***
+
 - `form = "1e1"`:
 Displays the number as a combination of `n`'s mantissa and exponent, without formatting the exponent (e.g. 1e10000000 would become 1e10000000).
 If the number is between 1e-3 and 1e3, the exponent is hidden and instead the number is converted to be regular (e.g. 5e2 would become 500.00).
@@ -340,7 +342,7 @@ For the full license please refer to the license at the top of the page.
 
 ## Version & Contribution:
 
-### Version: V1.0.4
+### Version: V1.0.5
 
 If you for some reason try this library out and find any issues, please don't hesitate to either report them as bugs,
 or make a fork of the project to be used as a fix, and I'll check them out.
